@@ -3,7 +3,6 @@ import { layoutTypes } from '../layout/types'
 import { handleActionsToEffects } from '../effects/effects'
 import { getInitialState } from '../helpers/components'
 import { createRequest, requestApi } from '../helpers/rest'
-import { act } from 'react-dom/test-utils';
 
 const resp = [{ "Id": 122, "Number": 6, "Initials": "DE", "Name": "DE", "Region": "DE", "Status": "I", "Contact": { "ContactPerson": null, "ContactType": null, "AddressType": null, "AddressLine1": null, "AddressLine2": null, "City": null, "State": null, "Zip": null, "Phone": null, "Fax": null, "Email": null, "IsPrimary": null, "CreatedBy": 0, "CreatedOn": "0001-01-01T00:00:00", "UpdatedBy": null, "UpdatedOn": null }, "RoleSites": null, "CreatedBy": 1, "CreatedOn": "2019-12-17T19:09:25.5163784", "UpdatedBy": null, "UpdatedOn": null }, { "Id": 123, "Number": 7, "Initials": "UPASITE", "Name": "UPASite", "Region": "UPA SIte", "Status": "A", "Contact": { "ContactPerson": null, "ContactType": null, "AddressType": null, "AddressLine1": null, "AddressLine2": null, "City": null, "State": null, "Zip": null, "Phone": null, "Fax": null, "Email": null, "IsPrimary": null, "CreatedBy": 0, "CreatedOn": "0001-01-01T00:00:00", "UpdatedBy": null, "UpdatedOn": null }, "RoleSites": null, "CreatedBy": 1, "CreatedOn": "2019-12-17T20:24:36.9906798", "UpdatedBy": 12876, "UpdatedOn": "2020-01-23T09:29:07.4653685" }, { "Id": 141, "Number": 232, "Initials": "CE", "Name": "Castle", "Region": "New Castle", "Status": "A", "Contact": { "ContactPerson": null, "ContactType": null, "AddressType": null, "AddressLine1": null, "AddressLine2": null, "City": null, "State": null, "Zip": null, "Phone": null, "Fax": null, "Email": null, "IsPrimary": null, "CreatedBy": 0, "CreatedOn": "0001-01-01T00:00:00", "UpdatedBy": null, "UpdatedOn": null }, "RoleSites": null, "CreatedBy": 12876, "CreatedOn": "2020-01-14T13:36:05.37044", "UpdatedBy": 12876, "UpdatedOn": "2020-01-23T09:23:47.8971871" }, { "Id": 144, "Number": 32, "Initials": "NY", "Name": "New York", "Region": "New Castle", "Status": "I", "Contact": { "ContactPerson": null, "ContactType": null, "AddressType": null, "AddressLine1": null, "AddressLine2": null, "City": null, "State": null, "Zip": null, "Phone": null, "Fax": null, "Email": null, "IsPrimary": null, "CreatedBy": 0, "CreatedOn": "0001-01-01T00:00:00", "UpdatedBy": null, "UpdatedOn": null }, "RoleSites": null, "CreatedBy": 12876, "CreatedOn": "2020-01-17T14:01:26.6518622", "UpdatedBy": 12876, "UpdatedOn": "2020-01-29T10:01:10.1456996" }]
 
@@ -33,7 +32,8 @@ function handlePropsChange(state, action) {
 
 
 export default function (props) {
-    const { components, layout, effects, actions, mapActionsToEffects } = props
+    const { components, layout, effects, actions, mapActionsToEffects, extraProps } = props
+    const { crud } = extraProps
     const { layoutType } = layout
 
     const [fieldsLayout, setFieldsLayout] = useState(layout)
@@ -101,64 +101,3 @@ export default function (props) {
     )
 }
 
-
-
-
-
-
-
-
-// import React, { useState, useEffect } from "react";
-// import Dropdown from './dropdown'
-// import TextField from './textbox'
-// import Checkbox from './checkbox'
-
-// const Types = {
-//     dropdown: Dropdown,
-//     textfield: TextField,
-//     checkbox: Checkbox
-// }
-// const generateResultObj = (components) => {
-//     const temp = {}
-//     components.forEach(each => {
-//         const { options } = each
-//         const { name } = options
-//         temp[name] = ''
-//     });
-//     return temp
-// }
-// export default function (props) {
-//     const { options, components } = props
-//     const [fieldValues, setFieldValues] = useState(() => generateResultObj(components))
-
-//     useEffect(() => {
-
-//     }, [fieldValues])
-
-//     const handleValue = (value, checked, name) => {
-//         switch (type) {
-//             case 'checkbox':
-//                 return checked
-//             default:
-//                 return value
-//         }
-//     }
-
-//     const handleFieldChange = (event) => {
-//         const { value, checked, name } = event
-//         const fieldValue = handleValue(value, checked, name)
-//         setFieldValues({ ...fieldValues, [name]: fieldValue })
-//     }
-
-//     return (
-//         <Form>
-//             {components.map(each => {
-//                 const { type, options } = each
-//                 const { name } = options
-//                 const FieldComponent = Types[type]
-//                 return < FieldComponent handleFieldChange={handleFieldChange} value={fieldValues[name]} options={options} />
-//             })}
-
-//         </Form>
-//     )
-// }

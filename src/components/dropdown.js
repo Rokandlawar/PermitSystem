@@ -12,9 +12,8 @@ const defaults = {
     }
 }
 export default function (props) {
-    const { value, handleFieldValue, opts } = props
-    const { options } = opts
-    const { label, helperText, items, name, fullWidth, transformProps } = options
+    const { value, handleFieldValue, extraProps, shareProps, ...otherProps  } = props
+    const { label, helperText, items, name, fullWidth, transformProps } = otherProps
     return (
         <FormControl fullWidth={fullWidth ? fullWidth : true}>
             <InputLabel>{label}</InputLabel>

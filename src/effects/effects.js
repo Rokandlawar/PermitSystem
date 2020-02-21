@@ -34,14 +34,14 @@ export const handleRules = (fieldRules, fieldValues) => {
         case 'AND':
             rules.every(each => {
                 const { condition, rules } = each
-                if (rules) handleRules(each, fieldValues)
-                else fieldValues[each]
+                if (rules) return handleRules(each, fieldValues)
+                else return fieldValues[each]
             })
         case 'OR':
             rules.some(each => {
                 const { condition, rules } = each
-                if (rules) handleRules(each, fieldValues)
-                else fieldValues[each]
+                if (rules) return handleRules(each, fieldValues)
+                else return fieldValues[each]
             })
     }
 

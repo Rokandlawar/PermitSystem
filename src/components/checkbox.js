@@ -3,11 +3,10 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-
+import FormHelperText from '@material-ui/core/FormHelperText'
 export default function (props) {
-    const { value, handleFieldValue, opts } = props
-    const { options } = opts
-    const { name, label, helperText, fullWidth } = options
+    const { value, handleFieldValue, extraProps, shareProps, ...otherProps  } = props
+    const { name, label, helperText, fullWidth } = otherProps
     console.log('checkbox vlaue',value)
     return (
         <FormControl fullWidth={fullWidth ? fullWidth : true}>

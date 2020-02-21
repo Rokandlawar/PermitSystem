@@ -9,6 +9,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import AddSettings from './settings/field'
+import SwitchUsers from './test/switchusers'
 
 const theme = createMuiTheme({
   palette: {
@@ -53,7 +54,7 @@ export default function App() {
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
               <MenuIcon />
             </IconButton>
-            <Typography  className={classes.title} variant="h6" noWrap>
+            <Typography className={classes.title} variant="h6" noWrap>
               Permit System
           </Typography>
           </Toolbar>
@@ -61,6 +62,7 @@ export default function App() {
         <Router>
           <Switch>
             <Route exact path='/addSettings' component={AddSettings} />
+            <Route exact path='/test/switchUsers' component={SwitchUsers} />
           </Switch>
         </Router>
       </div>

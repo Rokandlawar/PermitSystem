@@ -7,13 +7,12 @@
 **/
 
 import axios from "axios";
-import { getToken } from "../../modules/header";
-
+const token = ''
 export const GetData = (url) =>
     fetch(`${url}`, {
         method: 'GET',
         headers: {
-            'Authorization': getToken()
+            'Authorization': ''
         }
     })
         .then(response => {

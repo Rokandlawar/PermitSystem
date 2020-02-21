@@ -8,23 +8,23 @@ const types = {
 }
 
 export const createLayout = ({ layout, fields, values, addons, addonsByName }) => {
-    const { group, ...otherProps } = layout
+    const { group } = layout
     return group.map(each => {
-        const { order, type, options, components } = each
-        return <div {...options}>
+        const { order, type, components, ...otherProps } = each
+        return <div {...otherProps}>
             {components.map(name => {
-                const { order, sub } = layout[name]
+                const { order, sub, ...otherLayoutProps } = layout[name]
                 if (fields[name]) {
-                    const { type } = name
+                    const { type, key, order, ...otherFieldProps } = fields[name]
                     const EachComp = fieldtypes[type]
                     if (sub) {
-                        const { type, options } = sub
-                        return <div {...options}>
-                            <EachComp {...fields[name]} value={values[name]} {...addons} {...(addonsByName[name] ? addonsByName : null)} />
+                        const { type, ...otherProps } = sub
+                        return <div {...otherProps}>
+                            <EachComp {...otherFieldProps} value={values[name]} {...addons} {...addonsByName[name]} />
                         </div>
                     }
                     else {
-                        <EachComp {...fields[name]} value={values[name]} {...addons} {...(addonsByName[name] ? addonsByName : null)} />
+                        return <EachComp {...fields[name]} value={values[name]} {...addons} {...addonsByName[name]} />
                     }
                 }
                 else return null

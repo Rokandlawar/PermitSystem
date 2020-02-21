@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import TextField from '@material-ui/core/TextField'
 
 export default function (props) {
-    const { value, handleFieldValue, opts } = props
-    const { options } = opts
-    const { label, name, fullWidth } = options
+    const { value, handleFieldValue, extraProps, shareProps, ...otherProps } = props
+    const { label, name, fullWidth } = otherProps
     return (
         <TextField
             value={value}
