@@ -1,28 +1,47 @@
 import React, { useState } from "react"
 import { createRequest, requestApi } from '../helpers/rest'
 
-export const handleActionsToEffects = ({ current, mapCurrentActionsToEffects, fieldValues, actions, effects }) => {
+export const handleActionsToEffects = ({ current, mapCurrentActionsToEffects, fieldValues, actions, effects, dispatchPropsChange }) => {
     const { check, run } = mapCurrentActionsToEffects
-    const val = check.every(each => {
+    const val = check ? check.every(each => {
         handleRules(actions[each], fieldValues)
-    })
+    }) : true
     if (val) {
-        run.forEach(each => {
-            handleEffects(each)
+        const allPromises = run.map(each => {
+            return handleEffects(effects[each])
+        })
+        allPromises.forEach(each => {
+            Promise.all(each).then(results => {
+                dispatchPropsChange({
+                    type: 'update',
+                    updates: results
+                })
+            })
         })
     }
 }
 
 export const handleEffects = (fieldEffects) => {
-    fieldEffects.forEach(each => {
-        const { type, name } = each
+    return fieldEffects.map(each => {
+        const { type, name, read } = each
         switch (type) {
             case 'load':
-                handleLoad()
+                return handleLoad(read).then(res => {
+                    return {
+                        key: name,
+                        value: res
+                    }
+                })
             case 'enable':
-                handleEnable()
+                return {
+                    key: name,
+                    value: handleEnable()
+                }
             case 'disable':
-                handleDisable()
+                return {
+                    key: name,
+                    value: handleDisable()
+                }
         }
     })
 
@@ -47,18 +66,21 @@ export const handleRules = (fieldRules, fieldValues) => {
 
 }
 
-export const handleLoad = async ({ name }) => {
-    await createRequest(requestApi())
+export const handleLoad = (read) => {
+    return Promise.all(read.map(each => requestApi(createRequest(each)))).then(results => {
+        console.log(results)
+        return read.reduce((sum, current, index) => {
+            const { saveAs } = current
+            return { ...sum, [saveAs.key]: results[index] }
+        }, {})
+    })
 }
 
-export const handleEnable = ({ name }) => {
+export const handleEnable = () => {
 
 }
 
-export const handleDisable = ({ name }) => {
+export const handleDisable = () => {
 
 }
 
-export const handleFieldProps = (name, fieldProps) => {
-
-}

@@ -1,4 +1,4 @@
-import { GetData, PostData, PutData, PostFormData } from './api'
+import { GetData, PostData, PutData, PostFormData } from './requests'
 
 
 export const createRequest = (request, results, routeValues) => {

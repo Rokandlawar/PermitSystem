@@ -1,27 +1,26 @@
+const AdminConfig = 'http://development.delasoft.com:8443/UPA-adminconfig'
+const Admin = 'http://development.delasoft.com:8443/UPA-admin'
 const switchusers = {
     "type": "switchusers",
     "key": "switchusers",
     "name": "switchusers",
-    // routing: {
-    //     "path": "/Administration/switchusers",
+    // extraProps: {
+    //     "crud": {
+    //         "read": [{
+    //             //"url": "http://localhost:9001/api/SitePermitTypes",
+    //             "url": `${AdminConfig}/api/SitePermitTypes/{routeid}`,
+    //             type: 'get',
+    //             "routeProps": [{
+    //                 "name": "routeid"
+    //             }]
+    //         }],
+    //         "update": [{
+    //             //"url": "http://localhost:9001/api/SitePermitTypes/Update"
+    //             "url": `${AdminConfig}/api/SitePermitTypes/Update`,
+    //             type: 'put'
+    //         }]
+    //     }
     // },
-    extraProps: {
-        // "crud": {
-        //     "read": [{
-        //         //"url": "http://localhost:9001/api/SitePermitTypes",
-        //         "url": `${AdminConfig}/api/SitePermitTypes/{routeid}`,
-        //         type: 'get',
-        //         "routeProps": [{
-        //             "name": "routeid"
-        //         }]
-        //     }],
-        //     "update": [{
-        //         //"url": "http://localhost:9001/api/SitePermitTypes/Update"
-        //         "url": `${AdminConfig}/api/SitePermitTypes/Update`,
-        //         type: 'put'
-        //     }]
-        // }
-    },
     layout: {
         group: [
             {
@@ -166,24 +165,26 @@ const switchusers = {
         },
     },
     mapActionsToEffects: {
-        init: [1],
+        init: {
+            run: [1]
+        },
         change: {
-            'county': 2,
-            'user': 3,
-            'role': 4,
+            'county': [2],
+            'user': [3],
+            'role': [4],
             'currentlyAssigned': {
-                check: 8,
-                run: 5
+                check: [8],
+                run: [5]
             },
             'futureWorkflow': {
-                check: 8,
-                run: 5
+                check: [8],
+                run: [5]
             }
         },
         click: {
             'switchUser': {
-                check: 7,
-                run: 7
+                check: [7],
+                run: [7]
             }
         }
     },
@@ -262,8 +263,17 @@ const switchusers = {
         1: [
             {
                 type: 'load',
-                name: 'county'
-            }
+                name: 'county',
+                "read": [
+                    {
+                        url: `${Admin}/api/Sites/All/Active`,
+                        type: 'get',
+                        saveAs:{
+                            key:'items'
+                        }
+                    }
+                ]
+            },
         ],
         2: [
             {
@@ -306,25 +316,3 @@ const switchusers = {
 
 export default switchusers
 
-// effects: {
-//     county: {
-//         type: 'load',
-//         name: 'user'
-//     },
-//     user: {
-//         type: 'load',
-//         name: 'role'
-//     },
-//     role: {
-//         type: 'enable',
-//         name: 'switchuser'
-//     }
-// },
-// init: {
-//     actions: [
-//         {
-//             type: 'load',
-//             name: 'county'
-//         }
-//     ]
-// },

@@ -1,18 +1,11 @@
-/**        
-      *********************************************************
-      Description: handles the request to getdata, post data or put data from the service.
-      Required props:  url is required for all the functions.
-      limitations    : N/A
-      *********************************************************
-**/
-
 import axios from "axios";
-const token = ''
+const token = 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjEzRTQ3NkRFNUZGRkZGNDA2OENFRjY1NkQ5RjI0MUJDNEMwODAxM0UiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoidXBhYWRtaW4iLCJzdWIiOiJDMjBUNTZPRUhPQjNJVTJLRUI1OE43SUYxSzAzSUpTVFNOVEZVWjE2Qlc1TEtPQVQwNSIsInRva2VuX3VzYWdlIjoiYWNjZXNzX3Rva2VuIiwianRpIjoiZjhmZTBjZTQtOWNlMy00Yjc4LThjNmEtOWQ4YzI3Njg1MWY5Iiwic2NvcGUiOlsicHJvZmlsZSIsIk9wZW5JZCJdLCJhdWQiOlsiQ29yZUNsaWVudCIsIkdhdGV3YXlDbGllbnQiLCJyZXNvdXJjZV9zZXJ2ZXIiLCJNYXN0ZXJBZG1pbkNsaWVudCIsIlVQQU1vZHVsZUFkbWluQ2xpZW50IiwiVVBBQWRtaW5Db25maWdDbGllbnQiLCJVUEFBcHBsaWNhdGlvbkNsaWVudCIsIlVQQVBlcm1pdENsaWVudCIsIlVQQU5vdGlmaWNhdGlvbkNsaWVudCJdLCJuYmYiOjE1ODIzODIwMjksImV4cCI6MTU4MjQ2NjAyOSwiaWF0IjoxNTgyMzgyMDI5LCJpc3MiOiJodHRwOi8vZGV2ZWxvcG1lbnQuZGVsYXNvZnQuY29tOjg0NDMvYXV0aCJ9.RLUKv2wf6usGQzfQhCfDbzzb8OUnJQl1j8GmK1Pn06Va4sh38OWkOW68bGD8I7reyuxDoctk6Q8hYy_d6zhm1la6h59gV1A9t1GrG7isz5mYV6EGLGiSNSx7LDdB_r2PM27tRN6fcnbSyRSmWudY7XwIfwLClpYQkRyn7jsN0VhYmLsP1-SK23uqOlScKPXeL3t6fO17ZwgE3pN3CvWxBQM7qIehZsN6y2NLDNL3pmB5pikO_ldc0FvsGH5Yq9nOaskRBgTFvdRqXrr7k_2tTzYc4Lg5kk0E1M-cT6Nx_3CnnyYNc13xvv5y8YjXeV42iGuatPCRrUtH5q9T--DNHA'
+
 export const GetData = (url) =>
     fetch(`${url}`, {
         method: 'GET',
         headers: {
-            'Authorization': ''
+            'Authorization': token
         }
     })
         .then(response => {
