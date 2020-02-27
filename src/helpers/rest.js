@@ -17,8 +17,8 @@ export const createRequest = (request, results, routeValues) => {
 export const createIds = (props, results) => {
     if (Array.isArray(props)) {
         return props.map(each => {
-            const { name } = each
-            return { key: name, value: results[name] }
+            const { key, name } = each
+            return { key: key, value: results[name] }
         })
     }
     else return []

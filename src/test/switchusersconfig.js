@@ -1,6 +1,6 @@
 const AdminConfig = 'http://development.delasoft.com:8443/UPA-adminconfig'
 const Admin = 'http://development.delasoft.com:8443/UPA-admin'
-const switchusers = {
+const switchusersconfig = {
     "type": "switchusers",
     "key": "switchusers",
     "name": "switchusers",
@@ -35,7 +35,14 @@ const switchusers = {
                 type: 'div',
                 className: 'row',
                 components: ['currentlyassigned', 'futureworkflow']
+            },
+            {
+                order: 2,
+                type: 'div',
+                className: 'row',
+                components: ['switchuserbtn']
             }
+
         ],
 
         county: {
@@ -82,22 +89,31 @@ const switchusers = {
                 type: 'div',
                 className: 'col-4'
             }
+        },
+        switchuserbtn: {
+            order: 5,
+            type: 'div',
+            className: 'col-4',
+            sub: {
+                type: 'div',
+                className: 'col-4'
+            }
         }
+    },
+    values: {
+        county: '',
+        user: '',
+        role: '',
+        futureWorkFlow: false,
+        currentlyAssigned: false
     },
     "components": {
         county: {
             "type": "dropdown",
             "key": "county",
-            order: 0,
             "label": "Select County",
             "name": "county",
             extraProps: {
-                "crud": {
-                    "read": [{
-                        // "url": `${Admin}/api/Sites/All`,
-                        type: 'get'
-                    }]
-                },
                 transformProps: {
                     label: 'Name',
                     value: 'Id'
@@ -108,31 +124,39 @@ const switchusers = {
         user: {
             "type": "dropdown",
             "key": "user",
-            order: 1,
             "label": "Select User",
-            "name": "user"
+            "name": "user",
+            extraProps: {
+                transformProps: {
+                    label: 'name',
+                    value: 'id'
+                }
+            }
         },
         role: {
             "type": "dropdown",
             "key": "role",
-            order: 2,
             "label": "Select role",
-            name: "role"
-        },
-        switchuser: {
-            "type": "button",
-            "key": "futureworkflow",
-            order: 3,
-            "label": "Future Workflow",
-            name: "futureworkflow",
+            name: "role",
             extraProps: {
-                initialvalue: 'N'
+                transformProps: {
+                    label: 'name',
+                    value: 'id'
+                }
             }
+        },
+        switchuserbtn: {
+            "type": "button",
+            "key": "switchuserbtn",
+            "label": "Switch User",
+            name: "switchuserbtn",
+            variant: "contained",
+            color: "primary",
+            disabled: true
         },
         currentlyassigned: {
             "type": "checkbox",
             "key": "currentlyassigned",
-            order: 4,
             "label": "Currently Assigned",
             name: "currentlyassigned",
             extraProps: {
@@ -149,7 +173,6 @@ const switchusers = {
         futureworkflow: {
             "type": "checkbox",
             "key": "futureworkflow",
-            order: 5,
             "label": "Future Workflow",
             name: "futureworkflow",
             extraProps: {
@@ -169,20 +192,26 @@ const switchusers = {
             run: [1]
         },
         change: {
-            'county': [2],
-            'user': [3],
-            'role': [4],
-            'currentlyAssigned': {
+            'county': {
+                run: [2]
+            },
+            'user': {
+                run: [3]
+            },
+            'role': {
+                run: [4]
+            },
+            'currentlyassigned': {
                 check: [8],
                 run: [5]
             },
-            'futureWorkflow': {
+            'futureworkflow': {
                 check: [8],
                 run: [5]
             }
         },
         click: {
-            'switchUser': {
+            'switchuserbtn': {
                 check: [7],
                 run: [7]
             }
@@ -221,13 +250,13 @@ const switchusers = {
         6: [
             {
                 type: 'change',
-                name: 'currentlyAssigned'
+                name: 'currentlyassigned'
             }
         ],
         7: [
             {
                 type: 'click',
-                name: 'switchUser'
+                name: 'switchuserbtn'
             }
         ],
         8: [
@@ -247,10 +276,10 @@ const switchusers = {
                         condition: 'OR',
                         rules: [
                             {
-                                name: 'currentlyAssigned'
+                                name: 'currentlyassigned'
                             },
                             {
-                                name: 'futureWorkflow'
+                                name: 'futureworkflow'
                             }
                         ]
                     }
@@ -268,8 +297,8 @@ const switchusers = {
                     {
                         url: `${Admin}/api/Sites/All/Active`,
                         type: 'get',
-                        saveAs:{
-                            key:'items'
+                        saveAs: {
+                            key: 'items'
                         }
                     }
                 ]
@@ -278,19 +307,48 @@ const switchusers = {
         2: [
             {
                 type: 'load',
-                name: 'user'
+                name: 'user',
+                "read": [
+                    {
+                        url: `${Admin}/api/UPAUsers/UsersBySiteId/{siteid}`,
+                        type: 'get',
+                        matchProps: [{
+                            name: 'county',
+                            key: 'siteid'
+                        }],
+                        saveAs: {
+                            key: 'items'
+                        }
+                    }
+                ]
             }
         ],
         3: [
             {
                 type: 'load',
-                name: 'role'
+                name: 'role',
+                "read": [
+                    {
+                        url: `${Admin}/api/UPARoles/UserRoles/{userId}`,
+                        type: 'get',
+                        matchProps: [{
+                            name: 'user',
+                            key: 'userId'
+                        }],
+                        saveAs: {
+                            key: 'items'
+                        }
+                    }
+                ]
             }
         ],
         4: [
             {
                 type: 'enable',
-                name: 'switchUser'
+                name: 'switchuserbtn',
+                enable: {
+                    disabled: false
+                }
             }
         ],
         5: [
@@ -308,11 +366,11 @@ const switchusers = {
         7: [
             {
                 type: 'open',
-                name: 'switchUser'
+                name: 'switchuserbtn'
             }
         ],
     }
 }
 
-export default switchusers
+export default switchusersconfig
 

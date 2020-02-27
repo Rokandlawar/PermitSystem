@@ -1,6 +1,7 @@
 import React, { useReducer, useEffect, useRef, useState } from 'react';
 import { layoutTypes } from '../layout/types'
 import { handleActionsToEffects } from '../effects/effects'
+import { getInitialState } from '../helpers/components'
 import { createRequest, requestApi } from '../helpers/rest'
 
 function handleFieldChange(state, action) {
@@ -30,7 +31,7 @@ function handlePropsChange(state, action) {
 
 
 
-const useForm = (props) => {
+const useContainer = (props) => {
     const { components, layout, values, effects, actions, mapActionsToEffects, extraProps } = props
     const { crud } = extraProps || {}
     const { layoutType } = layout
@@ -56,6 +57,7 @@ const useForm = (props) => {
         })
         if (mapActionsToEffects['init']) {
             handleActionsToEffects({
+                current: null,
                 mapCurrentActionsToEffects: mapActionsToEffects['init'],
                 fieldValues: fieldValues,
                 actions: actions,
@@ -68,10 +70,11 @@ const useForm = (props) => {
 
     const handleFieldValue = (e) => {
         const { name, value, checked } = e.target
-        if (mapActionsToEffects.change[name]) {
+        if (mapActionsToEffects[name]) {
             handleActionsToEffects({
-                mapCurrentActionsToEffects: mapActionsToEffects.change[name],
-                fieldValues: { ...fieldValues, [name]: value },
+                current: { name: name, value: value },
+                mapCurrentActionsToEffects: mapActionsToEffects[name],
+                fieldValues: fieldValues,
                 actions: actions,
                 effects: effects,
                 dispatchPropsChange: dispatchPropsChange
@@ -102,7 +105,7 @@ const useForm = (props) => {
 
     return [
         fieldValues,
-        <form>
+        <div>
             {layoutType && layoutTypes[layoutType] ?
                 layoutTypes[layoutType]({
                     layout: fieldsLayout,
@@ -119,10 +122,10 @@ const useForm = (props) => {
                     addonsByName: addonsByName
                 })
             }
-        </form>
+        </div>
     ]
 
 
 }
 
-export default useForm
+export default useContainer

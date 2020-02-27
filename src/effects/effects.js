@@ -1,14 +1,14 @@
 import React, { useState } from "react"
 import { createRequest, requestApi } from '../helpers/rest'
 
-export const handleActionsToEffects = ({ current, mapCurrentActionsToEffects, fieldValues, actions, effects, dispatchPropsChange }) => {
+export const handleActionsToEffects = ({ mapCurrentActionsToEffects, fieldValues, actions, effects, dispatchPropsChange }) => {
     const { check, run } = mapCurrentActionsToEffects
     const val = check ? check.every(each => {
         handleRules(actions[each], fieldValues)
     }) : true
     if (val) {
         const allPromises = run.map(each => {
-            return handleEffects(effects[each])
+            return handleEffects(effects[each], fieldValues)
         })
         allPromises.forEach(each => {
             Promise.all(each).then(results => {
@@ -21,12 +21,12 @@ export const handleActionsToEffects = ({ current, mapCurrentActionsToEffects, fi
     }
 }
 
-export const handleEffects = (fieldEffects) => {
+export const handleEffects = (fieldEffects, fieldValues) => {
     return fieldEffects.map(each => {
-        const { type, name, read } = each
+        const { type, name, read, enable, disable, show, hide } = each
         switch (type) {
             case 'load':
-                return handleLoad(read).then(res => {
+                return handleLoad(read, fieldValues).then(res => {
                     return {
                         key: name,
                         value: res
@@ -35,12 +35,17 @@ export const handleEffects = (fieldEffects) => {
             case 'enable':
                 return {
                     key: name,
-                    value: handleEnable()
+                    value: handleEnable(enable)
                 }
             case 'disable':
                 return {
                     key: name,
                     value: handleDisable()
+                }
+            case 'show':
+                return {
+                    key: name,
+                    value: handleShow()
                 }
         }
     })
@@ -66,8 +71,8 @@ export const handleRules = (fieldRules, fieldValues) => {
 
 }
 
-export const handleLoad = (read) => {
-    return Promise.all(read.map(each => requestApi(createRequest(each)))).then(results => {
+export const handleLoad = (read, fieldValues) => {
+    return Promise.all(read.map(each => requestApi(createRequest(each, fieldValues)))).then(results => {
         console.log(results)
         return read.reduce((sum, current, index) => {
             const { saveAs } = current
@@ -76,11 +81,15 @@ export const handleLoad = (read) => {
     })
 }
 
-export const handleEnable = () => {
-
+export const handleEnable = (enable) => {
+    return enable
 }
 
 export const handleDisable = () => {
 
 }
 
+
+export const handleShow = () => {
+
+}
