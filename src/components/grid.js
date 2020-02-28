@@ -3,6 +3,7 @@ import MUIDataTable from "mui-datatables";
 
 const Grid = (props) => {
 
+    console.log(props)
     const columns = ["Name", "Title", "Location", "Age", "Salary"];
 
     const data = [

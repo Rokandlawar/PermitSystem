@@ -28,10 +28,8 @@ function handlePropsChange(state, action) {
     }
 }
 
-
-
-const useForm = (props) => {
-    const { components, layout, values, effects, actions, mapActionsToEffects, extraProps } = props
+export default function useForm(props) {
+    const { components, layout, values, effects, actions, mapActionsToEffects, extraProps, sharedProps, dispatchSharedValueChange } = props
     const { crud } = extraProps || {}
     const { layoutType } = layout
 
@@ -77,10 +75,18 @@ const useForm = (props) => {
                 dispatchPropsChange: dispatchPropsChange
             })
         }
+
+        const val = handleValue(name, value, checked)
         dispatchValueChange({
             type: 'update',
             name: name,
-            value: handleValue(name, value, checked)
+            value: val
+        })
+
+        dispatchSharedValueChange && sharedProps[name] && dispatchSharedValueChange({
+            type: 'update',
+            name: sharedProps[name],
+            value: val
         })
     }
 
@@ -101,28 +107,26 @@ const useForm = (props) => {
     const addonsByName = {}
 
     return [
-        fieldValues,
         <form>
             {layoutType && layoutTypes[layoutType] ?
                 layoutTypes[layoutType]({
                     layout: fieldsLayout,
                     fields: fieldsProps,
-                    values: fieldValues,
+                    fieldValues: fieldValues,
                     addons: addons,
                     addonsByName: addonsByName
                 }) :
                 layoutTypes.default({
                     layout: fieldsLayout,
                     fields: fieldsProps,
-                    values: fieldValues,
+                    fieldValues: fieldValues,
                     addons: addons,
                     addonsByName: addonsByName
                 })
             }
-        </form>
+        </form>,
+        fieldValues
     ]
 
 
 }
-
-export default useForm

@@ -1,4 +1,3 @@
-
 export const getInitialState = (components) => {
     const state = {}
     Object.keys(components).forEach(each => {
@@ -7,3 +6,4 @@ export const getInitialState = (components) => {
     })
     return state
 }
+

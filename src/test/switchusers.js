@@ -1,15 +1,18 @@
 import React, { Fragment, useEffect } from "react"
 import useForm from '../components/form'
-import SwitchUsersConfig from './switchusersconfig'
+import useContainer from '../components/container'
+import switchusersconfig from './switchusersconfig'
+import switchusersgridconfig from './switchusersgridconfig'
 import CustomMultiSelect from './CustomMultiSelect'
 
 const SwitchUsers = () => {
-    const [fieldValues, layout] = useForm({
-        ...SwitchUsersConfig
+    const [layout] = useContainer({
+        ...switchusersgridconfig
     })
-    useEffect(() => {
 
-    }, [])
+    // const [fieldValues, layout] = useForm({
+    //     ...switchusersconfig
+    // })
 
     return (
         <Fragment>

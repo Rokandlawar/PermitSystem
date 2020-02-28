@@ -1,9 +1,9 @@
 const AdminConfig = 'http://development.delasoft.com:8443/UPA-adminconfig'
 const Admin = 'http://development.delasoft.com:8443/UPA-admin'
 const switchusersconfig = {
-    "type": "switchusers",
+    "type": "form",
     "key": "switchusers",
-    "name": "switchusers",
+    "name": "switchuserssettings",
     // extraProps: {
     //     "crud": {
     //         "read": [{
@@ -104,8 +104,15 @@ const switchusersconfig = {
         county: '',
         user: '',
         role: '',
-        futureWorkFlow: false,
-        currentlyAssigned: false
+        futureworkflow: false,
+        currentlyassigned: false
+    },
+    sharedProps: {
+        'county': 'countys',
+        'user': 'users',
+        'role': 'roles',
+        'futureworkflow': 'futureworkflows',
+        'currentlyassigned': 'currentlyassigneds'
     },
     "components": {
         county: {
