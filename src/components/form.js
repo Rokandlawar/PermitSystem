@@ -2,21 +2,32 @@ import React, { useReducer, useEffect, useRef, useState } from 'react';
 import { layoutTypes } from '../layout/types'
 import { handleActionsToEffects } from '../effects/effects'
 import { createRequest, requestApi } from '../helpers/rest'
+import { groupByType } from '../helpers/components'
 
 function handleFieldChange(state, action) {
-    switch (action.type) {
+    const { type, updates } = action
+    switch (type) {
         case 'init':
             const { values } = action
             return { ...state, ...values }
         case 'update':
             const { name, value } = action
             return { ...state, [name]: value }
+        case 'updates':
+            let newstate = { ...state }
+            if (updates) {
+                updates.forEach(each => {
+                    const { key, value } = each
+                    newstate[key] = { ...newstate[key], ...value }
+                })
+            }
+            return newstate
     }
 }
 
 function handlePropsChange(state, action) {
     const { type, updates } = action
-    if (type === 'update') {
+    if (type === 'updates') {
         let newstate = { ...state }
         if (updates) {
             updates.forEach(each => {
@@ -53,27 +64,54 @@ export default function useForm(props) {
             })
         })
         if (mapActionsToEffects['init']) {
-            handleActionsToEffects({
-                mapCurrentActionsToEffects: mapActionsToEffects['init'],
-                fieldValues: fieldValues,
-                actions: actions,
-                effects: effects,
-                dispatchPropsChange: dispatchPropsChange
-            })
+            handleEffectUpdates(
+                handleActionsToEffects({
+                    mapCurrentActionsToEffects: mapActionsToEffects['init'],
+                    fieldValues: fieldValues,
+                    actions: actions,
+                    effects: effects
+                })
+            )
         }
     }, [])
 
 
+
+    const handleEffectUpdates = (res) => {
+        Promise.all(res).then(results => {
+            const dispatchType = groupByType(results)
+            const { prop, value, layout } = dispatchType
+            if (prop) {
+                dispatchPropsChange({
+                    type: 'updates',
+                    updates: prop
+                })
+            }
+            if (value) {
+                dispatchValueChange({
+                    type: 'updates',
+                    updates: value
+                })
+            }
+            if (layout) {
+                dispatchPropsChange({
+                    type: 'updates',
+                    updates: layout
+                })
+            }
+        })
+    }
     const handleFieldValue = (e) => {
         const { name, value, checked } = e.target
         if (mapActionsToEffects.change[name]) {
-            handleActionsToEffects({
-                mapCurrentActionsToEffects: mapActionsToEffects.change[name],
-                fieldValues: { ...fieldValues, [name]: value },
-                actions: actions,
-                effects: effects,
-                dispatchPropsChange: dispatchPropsChange
-            })
+            handleEffectUpdates(
+                handleActionsToEffects({
+                    mapCurrentActionsToEffects: mapActionsToEffects.change[name],
+                    fieldValues: { ...fieldValues, [name]: value },
+                    actions: actions,
+                    effects: effects
+                })
+            )
         }
 
         const val = handleValue(name, value, checked)

@@ -328,6 +328,26 @@ const switchusersconfig = {
                         }
                     }
                 ]
+            },
+            {
+                type: 'clear',
+                name: 'user'
+            },
+            {
+                type: 'clear',
+                name: 'role'
+            },
+            {
+                type: 'clearItems',
+                name: 'role',
+                items: []
+            },
+            {
+                type: 'disable',
+                name: 'switchuserbtn',
+                disable: {
+                    disabled: true
+                }
             }
         ],
         3: [
@@ -347,6 +367,17 @@ const switchusersconfig = {
                         }
                     }
                 ]
+            },
+            {
+                type: 'clear',
+                name: 'role'
+            },
+            {
+                type: 'disable',
+                name: 'switchuserbtn',
+                disable: {
+                    disabled: true
+                }
             }
         ],
         4: [
@@ -364,18 +395,33 @@ const switchusersconfig = {
                 name: 'grid'
             }
         ],
-        6: [
-            {
-                type: 'load',
-                name: 'grid'
-            }
-        ],
         7: [
             {
                 type: 'open',
                 name: 'switchuserbtn'
             }
         ],
+        8: [
+            {
+                type: 'clear',
+                name: 'user'
+            }
+        ],
+        9: [
+            {
+                type: 'clear',
+                name: 'role'
+            }
+        ],
+        10: [
+            {
+                type: 'disable',
+                name: 'switchuserbtn',
+                disable: {
+                    disabled: true
+                }
+            }
+        ]
     }
 }
 

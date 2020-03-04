@@ -1,23 +1,17 @@
 import React, { useState } from "react"
 import { createRequest, requestApi } from '../helpers/rest'
 
-export const handleActionsToEffects = ({ mapCurrentActionsToEffects, fieldValues, actions, effects, dispatchPropsChange }) => {
+export const handleActionsToEffects = ({ mapCurrentActionsToEffects, fieldValues, actions, effects }) => {
     const { check, run } = mapCurrentActionsToEffects
     const val = check ? check.every(each => {
         handleRules(actions[each], fieldValues)
     }) : true
     if (val) {
-        const allPromises = run.map(each => {
+        return run.map(each => {
             return handleEffects(effects[each], fieldValues)
-        })
-        allPromises.forEach(each => {
-            Promise.all(each).then(results => {
-                dispatchPropsChange({
-                    type: 'update',
-                    updates: results
-                })
-            })
-        })
+        }).reduce((accum, each) => {
+            return accum.concat(each)
+        }, [])
     }
 }
 
@@ -29,23 +23,39 @@ export const handleEffects = (fieldEffects, fieldValues) => {
                 return handleLoad(read, fieldValues).then(res => {
                     return {
                         key: name,
+                        type: 'prop',
                         value: res
                     }
                 })
             case 'enable':
                 return {
                     key: name,
+                    type: 'prop',
                     value: handleEnable(enable)
                 }
             case 'disable':
                 return {
                     key: name,
-                    value: handleDisable()
+                    type: 'prop',
+                    value: handleDisable(disable)
                 }
             case 'show':
                 return {
                     key: name,
+                    type: 'layout',
                     value: handleShow()
+                }
+            case 'clear':
+                return {
+                    key: name,
+                    type: 'value',
+                    value: { value: null }
+                }
+            case 'clearItems':
+                return {
+                    key: name,
+                    type: 'prop',
+                    value: { items: [] }
                 }
         }
     })
@@ -85,8 +95,8 @@ export const handleEnable = (enable) => {
     return enable
 }
 
-export const handleDisable = () => {
-
+export const handleDisable = (disable) => {
+    return disable
 }
 
 

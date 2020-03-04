@@ -7,3 +7,16 @@ export const getInitialState = (components) => {
     return state
 }
 
+export const groupByType = (values) => {
+    return values.reduce((accum, each) => {
+        const { type, ...otherProps } = each
+        if (accum[type]) {
+            accum[type].push(otherProps)
+        }
+        else {
+            accum[type] = []
+            accum[type].push(otherProps)
+        }
+        return accum
+    }, {})
+}
