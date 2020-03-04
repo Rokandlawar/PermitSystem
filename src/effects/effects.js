@@ -24,38 +24,38 @@ export const handleEffects = (fieldEffects, fieldValues) => {
                     return {
                         key: name,
                         type: 'prop',
-                        value: res
+                        result: res
                     }
                 })
             case 'enable':
                 return {
                     key: name,
                     type: 'prop',
-                    value: handleEnable(enable)
+                    result: handleEnable(enable)
                 }
             case 'disable':
                 return {
                     key: name,
                     type: 'prop',
-                    value: handleDisable(disable)
+                    result: handleDisable(disable)
                 }
             case 'show':
                 return {
                     key: name,
                     type: 'layout',
-                    value: handleShow()
+                    result: handleShow()
                 }
             case 'clear':
                 return {
                     key: name,
                     type: 'value',
-                    value: { value: null }
+                    result: { value: '' }
                 }
             case 'clearItems':
                 return {
                     key: name,
                     type: 'prop',
-                    value: { items: [] }
+                    result: { items: [] }
                 }
         }
     })

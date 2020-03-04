@@ -3,57 +3,68 @@ import { layoutTypes } from '../layout/types'
 import { handleActionsToEffects } from '../effects/effects'
 import { createRequest, requestApi } from '../helpers/rest'
 import { groupByType } from '../helpers/components'
+import Dropdown from './dropdown'
+import TextField from './textbox'
+import Checkbox from './checkbox'
+import Button from './button'
 
-function handleFieldChange(state, action) {
-    const { type, updates } = action
-    switch (type) {
-        case 'init':
-            const { values } = action
-            return { ...state, ...values }
-        case 'update':
-            const { name, value } = action
-            return { ...state, [name]: value }
-        case 'updates':
-            let newstate = { ...state }
-            if (updates) {
-                updates.forEach(each => {
-                    const { key, value } = each
-                    newstate[key] = { ...newstate[key], ...value }
-                })
-            }
-            return newstate
-    }
+
+const fieldTypes = {
+    dropdown: Dropdown,
+    textfield: TextField,
+    checkbox: Checkbox,
+    button: Button
 }
 
-function handlePropsChange(state, action) {
-    const { type, updates } = action
+function handleFieldChange(state, action) {
+    const { type, ...otherProps } = action
+    if (type === 'init') {
+        const { values } = otherProps
+        return { ...state, fieldValues: { ...values } }
+    }
+    if (type === 'value') {
+        const { name, value } = otherProps
+        return { ...state, fieldValues: { ...state.fieldValues, [name]: value } }
+    }
+    if (type === 'prop') {
+        const { name, value } = otherProps
+        return { ...state, fieldProps: { ...state.fieldProps, [name]: { ...state.fieldProps[name], ...value } } }
+    }
     if (type === 'updates') {
         let newstate = { ...state }
-        if (updates) {
-            updates.forEach(each => {
-                const { key, value } = each
-                newstate[key] = { ...newstate[key], ...value }
+        const { updates } = otherProps
+        const { prop, value, layout } = updates
+        if (prop) {
+            prop.forEach(each => {
+                const { key, result } = each
+                newstate = { ...newstate, fieldProps: { ...newstate.fieldProps, [key]: { ...newstate.fieldProps[key], ...result } } }
             })
+        }
+        if (value) {
+            value.forEach(each => {
+                const { key, result } = each
+                newstate = { ...newstate, fieldValues: { ...newstate.fieldValues, [key]: result.value } }
+            })
+
+        }
+        if (layout) {
         }
         return newstate
     }
 }
+
 
 export default function useForm(props) {
     const { components, layout, values, effects, actions, mapActionsToEffects, extraProps, sharedProps, dispatchSharedValueChange } = props
     const { crud } = extraProps || {}
     const { layoutType } = layout
 
-    const [fieldsLayout, setFieldsLayout] = useState(layout)
-    const [fieldsProps, dispatchPropsChange] = useReducer(
-        handlePropsChange,
-        components
+    const [fields, dispatchFieldsChange] = useReducer(
+        handleFieldChange,
+        { fieldValues: values, fieldProps: components, fieldsLayout: layout }
     )
 
-    const [fieldValues, dispatchValueChange] = useReducer(
-        handleFieldChange,
-        values
-    )
+    const [fieldNames, setFieldNames] = useState(() => Object.keys(components))
 
     useEffect(() => {
         const { read } = crud || {}
@@ -75,32 +86,16 @@ export default function useForm(props) {
         }
     }, [])
 
-
-
     const handleEffectUpdates = (res) => {
         Promise.all(res).then(results => {
-            const dispatchType = groupByType(results)
-            const { prop, value, layout } = dispatchType
-            if (prop) {
-                dispatchPropsChange({
-                    type: 'updates',
-                    updates: prop
-                })
-            }
-            if (value) {
-                dispatchValueChange({
-                    type: 'updates',
-                    updates: value
-                })
-            }
-            if (layout) {
-                dispatchPropsChange({
-                    type: 'updates',
-                    updates: layout
-                })
-            }
+            dispatchFieldsChange({
+                type: 'updates',
+                updates: groupByType(results)
+            })
         })
     }
+
+
     const handleFieldValue = (e) => {
         const { name, value, checked } = e.target
         if (mapActionsToEffects.change[name]) {
@@ -115,8 +110,8 @@ export default function useForm(props) {
         }
 
         const val = handleValue(name, value, checked)
-        dispatchValueChange({
-            type: 'update',
+        dispatchFieldsChange({
+            type: 'value',
             name: name,
             value: val
         })
@@ -138,33 +133,37 @@ export default function useForm(props) {
         }
     }
 
-    const addons = {
-        handleFieldValue: handleFieldValue
+
+    const setCustomFields = (props) => {
+        const { layout, components } = props
     }
 
-    const addonsByName = {}
 
+    const componentsCreation = (fieldNames, props, values) => {
+        return fieldNames.reduce((accum, each) => {
+            const { type, ...otherProps } = props[each]
+            const EachComp = fieldTypes[type]
+            accum[each] = <EachComp value={values[each]} {...otherProps} handleFieldValue={handleFieldValue} />
+            return accum
+        }, {})
+    }
+
+    const { fieldValues, fieldProps, fieldsLayout } = fields
     return [
         <form>
             {layoutType && layoutTypes[layoutType] ?
                 layoutTypes[layoutType]({
                     layout: fieldsLayout,
-                    fields: fieldsProps,
-                    fieldValues: fieldValues,
-                    addons: addons,
-                    addonsByName: addonsByName
+                    fields: componentsCreation(fieldNames, fieldProps, fieldValues)
                 }) :
                 layoutTypes.default({
                     layout: fieldsLayout,
-                    fields: fieldsProps,
-                    fieldValues: fieldValues,
-                    addons: addons,
-                    addonsByName: addonsByName
+                    fields: componentsCreation(fieldNames, fieldProps, fieldValues)
                 })
             }
         </form>,
-        fieldValues
+        fieldValues,
+        setCustomFields
     ]
-
 
 }
