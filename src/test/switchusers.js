@@ -62,12 +62,14 @@ const SwitchUsers = () => {
     //                 custommulitselect1: {
     //                     name: 'custommulitselect1',
     //                     type: CustomMultiSelect,
+    //                     custom: true
     //                     //onChange: checking
 
     //                 },
     //                 custommulitselect2: {
     //                     name: 'custommulitselect2',
     //                     type: CustomMultiSelect,
+
     //                     //onChange: checking
 
     //                 }

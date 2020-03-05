@@ -51,6 +51,42 @@ function handleFieldChange(state, action) {
         }
         return newstate
     }
+    
+    // if (type === 'custom') {
+    //     let newstate = { ...state }
+    //     const { layout, components } = otherProps
+    //     const { group, ...othersLayout } = layout
+
+    //     newstate = { ...newstate, fieldProps: { ...newstate.fieldProps, ...components } }
+    //     return newstate
+    //     const newgroup = [...group,...state.fieldsLayout.group]
+    //     return {
+    //         ...state, fieldProps: { ...state.fieldProps, ...components }, fieldsLayout: {
+    //             ...state.fieldsLayout, ...othersLayout,
+    //             group: state.fieldsLayout.group.reduce((accum, e) => {
+    //                 group.forEach(each => {
+    //                     const { position, order, ...compProps } = each
+    //                     if (position) {
+    //                         newstate.layout.group = newstate.layout.group.map(each => {
+    //                             if (each.order === order) {
+
+    //                             }
+    //                             else return each
+    //                         })
+    //                     }
+    //                     else {
+    //                         accum.push(each)
+    //                     }
+    //                 })
+
+    //                 return accum
+
+    //             }, [])
+    //         }
+    //     }
+    // }
+
+    return state
 }
 
 
@@ -136,6 +172,10 @@ export default function useForm(props) {
 
     const setCustomFields = (props) => {
         const { layout, components } = props
+        dispatchFieldsChange({
+            type: 'custom',
+            custom: props
+        })
     }
 
 

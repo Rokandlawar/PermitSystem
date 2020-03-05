@@ -1,8 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react'
-import fieldTypes from '../helpers/fieldtypes'
 import { DIV } from '../helpers/native'
-import useForm from '../components/form'
-import useContainer from '../components/container'
 
 const types = {
     div: DIV
