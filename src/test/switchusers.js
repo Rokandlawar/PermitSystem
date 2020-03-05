@@ -5,6 +5,8 @@ import switchusersconfig from './switchusersconfig'
 import switchusersgridconfig from './switchusersgridconfig'
 import CustomMultiSelect from './CustomMultiSelect'
 import { MultiSelect } from '@progress/kendo-react-dropdowns';
+import TextField from '@material-ui/core/TextField'
+import textbox from "../components/textbox"
 
 const SwitchUsers = () => {
     // const [layout] = useContainer({
@@ -19,64 +21,65 @@ const SwitchUsers = () => {
         console.log(name)
     }
 
-    // useEffect(() => {
-    //     setCustomFields(
-    //         {
-    //             layout: {
-    //                 group: [
-    //                     {
-    //                         order: 0,
-    //                         type: 'div',
-    //                         className: 'row',
-    //                         position: 2,
-    //                         components: ['custommulitselect1']
-    //                     },
-    //                     {
-    //                         order: 5,
-    //                         type: 'div',
-    //                         className: 'row',
-    //                         components: ['custommulitselect2']
-    //                     }
-    //                 ],
-    //                 custommulitselect1: {
-    //                     order: 0,
-    //                     type: 'div',
-    //                     className: 'col-4',
-    //                     sub: {
-    //                         type: 'div',
-    //                         className: 'col-4',
-    //                         //onChange: checking
-    //                     }
-    //                 },
-    //                 custommulitselect2: {
-    //                     order: 5,
-    //                     type: 'div',
-    //                     className: 'col-4',
-    //                     sub: {
-    //                         type: 'div',
-    //                         className: 'col-4',
-    //                     }
-    //                 }
-    //             },
-    //             components: {
-    //                 custommulitselect1: {
-    //                     name: 'custommulitselect1',
-    //                     type: CustomMultiSelect,
-    //                     custom: true
-    //                     //onChange: checking
+    useEffect(() => {
+        setCustomFields(
+            {
+                layout: {
+                    group: [
+                        {
+                            order: 0,
+                            position: 2,
+                            components: ['custommulitselect1']
+                        },
+                        {
+                            order: 5,
+                            type: 'div',
+                            className: 'row',
+                            components: ['custommulitselect2']
+                        }
+                    ],
+                    custommulitselect1: {
+                        order: 0,
+                        type: 'div',
+                        className: 'col-4',
+                        sub: {
+                            type: 'div',
+                            className: 'col-4',
+                            //onChange: checking
+                        }
+                    },
+                    custommulitselect2: {
+                        order: 5,
+                        type: 'div',
+                        className: 'col-4',
+                        sub: {
+                            type: 'div',
+                            className: 'col-4',
+                        }
+                    }
+                },
+                components: {
+                    custommulitselect1: {
+                        name: 'custommulitselect1',
+                        type: TextField,
+                        custom: true,
+                        label:'custommulitselect1',
+                        //onChange: checking
 
-    //                 },
-    //                 custommulitselect2: {
-    //                     name: 'custommulitselect2',
-    //                     type: CustomMultiSelect,
+                    },
+                    custommulitselect2: {
+                        name: 'custommulitselect2',
+                        type: TextField,
+                        custom: true,
+                         label:'custommulitselect2',
 
-    //                     //onChange: checking
+                        //onChange: checking
 
-    //                 }
-    //             }
-    //         }
-    //     )
-    // }, [])
+                    }
+                }
+            }
+        )
+    }, [])
 
     return (
         <Fragment>
