@@ -4,7 +4,10 @@ import { createRequest, requestApi } from '../helpers/rest'
 export const handleActionsToEffects = ({ mapCurrentActionsToEffects, fieldValues, actions, effects }) => {
     const { check, run } = mapCurrentActionsToEffects
     const val = check ? check.every(each => {
-        handleRules(actions[each], fieldValues)
+        return actions[each].every(e => {
+            return handleRules(e, fieldValues)
+        })
+
     }) : true
     if (val) {
         return run.map(each => {
@@ -13,6 +16,7 @@ export const handleActionsToEffects = ({ mapCurrentActionsToEffects, fieldValues
             return accum.concat(each)
         }, [])
     }
+    else return []
 }
 
 export const handleEffects = (fieldEffects, fieldValues) => {
@@ -66,16 +70,36 @@ export const handleRules = (fieldRules, fieldValues) => {
     const { condition, rules } = fieldRules
     switch (condition) {
         case 'AND':
-            rules.every(each => {
+            return rules.every(each => {
                 const { condition, rules } = each
-                if (rules) return handleRules(each, fieldValues)
-                else return fieldValues[each]
+                if (condition) {
+                    return handleRules(each, fieldValues)
+                }
+                else {
+                    const { name, type } = each
+                    switch (type) {
+                        case 'value':
+                            return Boolean(fieldValues[name])
+                        case 'check':
+                            return true
+                    }
+                }
             })
         case 'OR':
-            rules.some(each => {
+            return rules.some(each => {
                 const { condition, rules } = each
-                if (rules) return handleRules(each, fieldValues)
-                else return fieldValues[each]
+                if (condition) {
+                    return handleRules(each, fieldValues)
+                }
+                else {
+                    const { name, type } = each
+                    switch (type) {
+                        case 'value':
+                            return Boolean(fieldValues[name])
+                        case 'check':
+                            return true
+                    }
+                }
             })
     }
 

@@ -210,11 +210,11 @@ const switchusersconfig = {
             },
             'currentlyassigned': {
                 check: [8],
-                run: [5]
+                run: []
             },
             'futureworkflow': {
                 check: [8],
-                run: [5]
+                run: []
             }
         },
         click: {
@@ -271,22 +271,28 @@ const switchusersconfig = {
                 condition: 'AND',
                 rules: [
                     {
-                        name: 'county'
+                        name: 'county',
+                        type: 'value'
                     },
                     {
-                        name: 'user'
+                        name: 'user',
+                        type: 'value'
                     },
                     {
-                        name: 'role'
+                        name: 'role',
+                        type: 'value'
                     },
                     {
                         condition: 'OR',
                         rules: [
                             {
-                                name: 'currentlyassigned'
+                                name: 'currentlyassigned',
+                                type: 'check',
+                                value: true
                             },
                             {
-                                name: 'futureworkflow'
+                                name: 'futureworkflow',
+                                type: 'check'
                             }
                         ]
                     }
