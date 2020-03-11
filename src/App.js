@@ -10,7 +10,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import AddSettings from './settings/field'
 import SwitchUsers from './test/switchusers'
-
+//styles
+import 'bootstrap/dist/css/bootstrap.min.css';
 const theme = createMuiTheme({
   palette: {
     secondary: {
