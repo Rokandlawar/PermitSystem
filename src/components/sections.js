@@ -1,7 +1,6 @@
-import React, { useReducer, useEffect, useRef, useState } from 'react';
+import React, { useReducer, useEffect, useRef, useState, Fragment } from 'react';
 import { layoutTypes } from '../layout/types'
 import { handleActionsToEffects } from '../effects/effects'
-import { createRequest, requestApi } from '../helpers/rest'
 import { groupByType } from '../helpers/components'
 import Dropdown from './dropdown'
 import TextField from './textbox'
@@ -79,10 +78,11 @@ function handleFieldChange(state, action) {
 }
 
 
-export default function useForm(props) {
-    const { components, layout, values, effects, actions, mapActionsToEffects, extraProps, sharedProps, dispatchSharedValueChange } = props
+export default function useSections(props) {
+    const { components, layout, values, effects, actions, mapActionsToEffects, extraProps, sharedProps, dispatchSharedValueChange, sections } = props
     const { crud } = extraProps || {}
     const layoutType = layout.type
+    const sectionType = sections.type
 
     const [fields, dispatchFieldsChange] = useReducer(
         handleFieldChange,
@@ -90,25 +90,25 @@ export default function useForm(props) {
     )
 
 
-    useEffect(() => {
-        const { read } = crud || {}
-        read && Promise.all(read.map(each => requestApi(createRequest(each)))).then(results => {
-            handleFieldChange({
-                type: 'init',
-                values: results
-            })
-        })
-        if (mapActionsToEffects['init']) {
-            handleEffectUpdates(
-                handleActionsToEffects({
-                    mapCurrentActionsToEffects: mapActionsToEffects['init'],
-                    fieldValues: fieldValues,
-                    actions: actions,
-                    effects: effects
-                })
-            )
-        }
-    }, [])
+    // useEffect(() => {
+    //     const { read } = crud || {}
+    //     read && Promise.all(read.map(each => requestApi(createRequest(each)))).then(results => {
+    //         handleFieldChange({
+    //             type: 'init',
+    //             values: results
+    //         })
+    //     })
+    //     if (mapActionsToEffects['init']) {
+    //         handleEffectUpdates(
+    //             handleActionsToEffects({
+    //                 mapCurrentActionsToEffects: mapActionsToEffects['init'],
+    //                 fieldValues: fieldValues,
+    //                 actions: actions,
+    //                 effects: effects
+    //             })
+    //         )
+    //     }
+    // }, [])
 
     const handleEffectUpdates = (res) => {
         Promise.all(res).then(results => {
@@ -175,22 +175,41 @@ export default function useForm(props) {
         }, {})
     }
 
+    const sectionsCreation = (sections) => {
+        const { type, sectionNames, ...otherProps } = sections
+        return {
+            ...otherProps,
+            sections: sectionNames.map(each => {
+                const { group, ...otherNames } = layout[each]
+                return layoutType && layoutTypes[layoutType] ?
+                    layoutTypes[layoutType]({
+                        layout: fieldsLayout[each],
+                        fields: componentsCreation(Object.keys(otherNames), fieldValues)
+                    }) :
+                    layoutTypes.default({
+                        layout: fieldsLayout[each],
+                        fields: componentsCreation(Object.keys(otherNames), fieldValues)
+                    })
+            })
+        }
+
+    }
     const { fieldValues, fieldProps, fieldsLayout } = fields
     return [
-        <form>
-            {layoutType && layoutTypes[layoutType] ?
-                layoutTypes[layoutType]({
-                    layout: fieldsLayout,
-                    fields: componentsCreation(Object.keys(fieldProps), fieldValues)
+        <Fragment>
+            {sectionType && layoutTypes[sectionType] ?
+                layoutTypes[sectionType]({
+                    ...sectionsCreation(sections)
                 }) :
                 layoutTypes.default({
                     layout: fieldsLayout,
-                    fields: componentsCreation(Object.keys(fieldProps), fieldValues)
+                    fields: componentsCreation(fieldProps, fieldValues)
                 })
             }
-        </form>,
+        </Fragment>,
         fieldValues,
         setCustomFields
     ]
 
 }
+

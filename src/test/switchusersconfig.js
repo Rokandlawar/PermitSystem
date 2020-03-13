@@ -192,7 +192,7 @@ const switchusersconfig = {
                 }
             }
 
-        },
+        }
     },
     mapActionsToEffects: {
         init: {

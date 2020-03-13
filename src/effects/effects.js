@@ -11,9 +11,13 @@ export const handleActionsToEffects = ({ mapCurrentActionsToEffects, fieldValues
     }) : true
     if (val) {
         return run.map(each => {
-            return handleEffects(effects[each], fieldValues)
+            const temp = handleEffects(effects[each], fieldValues)
+            console.log('handleEffects',temp)
+            return temp
         }).reduce((accum, each) => {
-            return accum.concat(each)
+            const temp = accum.concat(each)
+            console.log('accum',each,temp)
+            return temp
         }, [])
     }
     else return []
@@ -61,6 +65,12 @@ export const handleEffects = (fieldEffects, fieldValues) => {
                     type: 'prop',
                     result: { items: [] }
                 }
+            case 'check':
+                return {
+                    key: name,
+                    type: 'value',
+                    result: { value: 'Y' }
+                }
         }
     })
 
@@ -76,13 +86,9 @@ export const handleRules = (fieldRules, fieldValues) => {
                     return handleRules(each, fieldValues)
                 }
                 else {
-                    const { name, type } = each
-                    switch (type) {
-                        case 'value':
-                            return Boolean(fieldValues[name])
-                        case 'check':
-                            return true
-                    }
+                    const temp = handleOperators(each, fieldValues)
+                    console.log('operator and', temp)
+                    return temp
                 }
             })
         case 'OR':
@@ -92,17 +98,29 @@ export const handleRules = (fieldRules, fieldValues) => {
                     return handleRules(each, fieldValues)
                 }
                 else {
-                    const { name, type } = each
-                    switch (type) {
-                        case 'value':
-                            return Boolean(fieldValues[name])
-                        case 'check':
-                            return true
-                    }
+                    const temp = handleOperators(each, fieldValues)
+                    console.log('operator or', temp)
+                    return temp
                 }
             })
     }
 
+}
+
+export const handleOperators = (field, fieldValues) => {
+    const { name, type, value } = field
+    switch (type) {
+        case 'value':
+            return Boolean(fieldValues[name])
+        case 'Equals':
+            return fieldValues[name] === value
+        case 'GreaterThan':
+            return fieldValues[name] > value
+        case 'LessThan':
+            return fieldValues[name] < value
+        case 'check':
+            return true
+    }
 }
 
 export const handleLoad = (read, fieldValues) => {

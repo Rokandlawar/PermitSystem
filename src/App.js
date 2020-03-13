@@ -10,6 +10,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import AddSettings from './settings/field'
 import SwitchUsers from './test/switchusers'
+import Sections from './test/sectionsswitchusers'
 //styles
 import 'bootstrap/dist/css/bootstrap.min.css';
 const theme = createMuiTheme({
@@ -64,6 +65,7 @@ export default function App() {
           <Switch>
             <Route exact path='/addSettings' component={AddSettings} />
             <Route exact path='/test/switchUsers' component={SwitchUsers} />
+            <Route exact path='/test/sections' component={Sections} />
           </Switch>
         </Router>
       </div>

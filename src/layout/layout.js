@@ -12,6 +12,7 @@ export const createLayout = ({ layout, fields }) => {
         return <div {...otherProps} key={order || index}>
             {components.map((name, index) => {
                 const { order, sub, ...otherLayoutProps } = layout[name]
+                console.log('comp',fields[name])
                 if (fields) {
                     if (sub) {
                         const { type, key, ...otherProps } = sub
