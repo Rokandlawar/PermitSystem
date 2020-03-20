@@ -1156,7 +1156,13 @@ const switchusersconfig = {
         change: {
             'laneconfig': {
                 check: [1.1],
-                run: [1]
+                run: [1],
+                uncheck: true
+            },
+            'LandUseAdt':{
+                check:[1.1],
+                run:[1],
+                uncheck:true
             }
         }
     },

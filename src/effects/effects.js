@@ -2,28 +2,29 @@ import React, { useState } from "react"
 import { createRequest, requestApi } from '../helpers/rest'
 
 export const handleActionsToEffects = ({ mapCurrentActionsToEffects, fieldValues, actions, effects }) => {
-    const { check, run } = mapCurrentActionsToEffects
+    const { check, uncheck, run } = mapCurrentActionsToEffects
     const val = check ? check.every(each => {
         return actions[each].every(e => {
             return handleRules(e, fieldValues)
         })
 
     }) : true
-    if (val) {
+
+    if (val || uncheck) {
         return run.map(each => {
-            const temp = handleEffects(effects[each], fieldValues)
-            console.log('handleEffects',temp)
+            const temp = handleEffects(effects[each], fieldValues, val)
+            console.log('handleEffects', temp)
             return temp
         }).reduce((accum, each) => {
             const temp = accum.concat(each)
-            console.log('accum',each,temp)
+            console.log('accum', each, temp)
             return temp
         }, [])
     }
     else return []
 }
 
-export const handleEffects = (fieldEffects, fieldValues) => {
+export const handleEffects = (fieldEffects, fieldValues, status) => {
     return fieldEffects.map(each => {
         const { type, name, read, enable, disable, show, hide } = each
         switch (type) {
@@ -66,10 +67,11 @@ export const handleEffects = (fieldEffects, fieldValues) => {
                     result: { items: [] }
                 }
             case 'check':
+                //console.log('fieldEffects[status]',fieldEffects[status],fieldEffects,status)
                 return {
                     key: name,
                     type: 'value',
-                    result: { value: 'Y' }
+                    result: { value: each[status] }
                 }
         }
     })
@@ -113,7 +115,7 @@ export const handleOperators = (field, fieldValues) => {
         case 'value':
             return Boolean(fieldValues[name])
         case 'Equals':
-            return fieldValues[name] === value
+            return fieldValues[name] == value
         case 'GreaterThan':
             return fieldValues[name] > value
         case 'LessThan':

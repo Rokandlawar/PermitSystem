@@ -2,6 +2,7 @@ import React, { useReducer, useEffect, useRef, useState, Fragment } from 'react'
 import { layoutTypes } from '../layout/types'
 import { handleActionsToEffects } from '../effects/effects'
 import { groupByType } from '../helpers/components'
+import { createRequest, requestApi } from '../helpers/rest'
 import Dropdown from './dropdown'
 import TextField from './textbox'
 import Checkbox from './checkbox'
@@ -90,25 +91,25 @@ export default function useSections(props) {
     )
 
 
-    // useEffect(() => {
-    //     const { read } = crud || {}
-    //     read && Promise.all(read.map(each => requestApi(createRequest(each)))).then(results => {
-    //         handleFieldChange({
-    //             type: 'init',
-    //             values: results
-    //         })
-    //     })
-    //     if (mapActionsToEffects['init']) {
-    //         handleEffectUpdates(
-    //             handleActionsToEffects({
-    //                 mapCurrentActionsToEffects: mapActionsToEffects['init'],
-    //                 fieldValues: fieldValues,
-    //                 actions: actions,
-    //                 effects: effects
-    //             })
-    //         )
-    //     }
-    // }, [])
+    useEffect(() => {
+        const { read } = crud || {}
+        read && Promise.all(read.map(each => requestApi(createRequest(each)))).then(results => {
+            handleFieldChange({
+                type: 'init',
+                values: results
+            })
+        })
+        if (mapActionsToEffects['init']) {
+            handleEffectUpdates(
+                handleActionsToEffects({
+                    mapCurrentActionsToEffects: mapActionsToEffects['init'],
+                    fieldValues: fieldValues,
+                    actions: actions,
+                    effects: effects
+                })
+            )
+        }
+    }, [])
 
     const handleEffectUpdates = (res) => {
         Promise.all(res).then(results => {
